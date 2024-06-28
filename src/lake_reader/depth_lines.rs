@@ -1,5 +1,6 @@
 use std::f64::consts::PI;
 
+use proj::Proj;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -66,6 +67,8 @@ impl Geometry {
     }
 
     fn mercator_to_lat_lon(mercator: (f64, f64)) -> (f64, f64) {
-        mercator
+        let proj = Proj::new_known_crs("EPSG:3857", "EPSG:4326", None).unwrap();
+
+        proj.convert(mercator).unwrap()
     }
 }
