@@ -39,15 +39,15 @@ pub struct Attributes {
     #[serde(rename = "OBJECTID")]
     id: u32,
     #[serde(rename = "WaterDepth")]
-    water_depth: f32,
+    water_depth: Option<f32>,
     #[serde(rename = "Source")]
-    source: String,
+    source: Option<String>,
     #[serde(rename = "SourceDate")]
-    source_date: String,
+    source_date: Option<String>,
     #[serde(rename = "Equipment")]
-    equipment: String,
+    equipment: Option<String>,
     #[serde(rename = "Shape_Length")]
-    shape_length: f64,
+    shape_length: Option<f64>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -67,8 +67,14 @@ impl Geometry {
     }
 
     fn mercator_to_lat_lon(mercator: (f64, f64)) -> (f64, f64) {
-        let proj = Proj::new_known_crs("EPSG:3857", "EPSG:4326", None).unwrap();
+        let (x, y) = mercator;
 
-        proj.convert(mercator).unwrap()
+        let lon = x / 20037508.34 * 180.0;
+
+        // Convert y to latitude
+        let lat_rad = y / 20037508.34 * PI;
+        let lat = 180.0 / PI * (2.0 * lat_rad.exp().atan() - PI / 2.0);
+
+        (lon, lat)
     }
 }
