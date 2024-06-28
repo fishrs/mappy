@@ -8,7 +8,8 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let reader = BufReader::new(file);
 
-    let data: DepthLines = serde_json::from_reader(reader)?;
+    let mut data: DepthLines = serde_json::from_reader(reader)?;
+    data.to_lat_lon();
 
     println!("{:#?}", data);
 
