@@ -4,7 +4,7 @@ use std::error::Error;
 use mappy::lake_reader::depth_lines::DepthLines;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let file = File::open("LakeWaubesaDepthLines.json")?;
+    let file = File::open("LakeWaubesaWaterDepthLines.json")?;
 
     let reader = BufReader::new(file);
 

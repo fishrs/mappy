@@ -2,37 +2,11 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct DepthLines {
-    displayFieldName: String,
-    fieldAliases: FieldAliases,
-    geometryType: String,
-    spatialReference: SpatialReference,
-    fields: Vec<Field>,
+    #[serde(rename = "displayFieldName")]
+    field_name: String,
+    #[serde(rename = "geometryType")]
+    geometry_type: String,
     features: Vec<Feature>,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-pub struct FieldAliases {
-    OBJECTID: String,
-    WaterDepth: String,
-    Source: String,
-    SourceDate: String,
-    Equipment: String,
-    Shape_Length: String,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-pub struct SpatialReference {
-    wkid: u32,
-    latestWkid: u32,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-pub struct Field {
-    name: String,
-    #[serde(rename = "type")]
-    field_type: String,
-    alias: String,
-    length: Option<u32>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -43,12 +17,18 @@ pub struct Feature {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Attributes {
-    OBJECTID: u32,
-    WaterDepth: f32,
-    Source: String,
-    SourceDate: String,
-    Equipment: String,
-    Shape_Length: f64,
+    #[serde(rename = "OBJECTID")]
+    id: u32,
+    #[serde(rename = "WaterDepth")]
+    water_depth: f32,
+    #[serde(rename = "Source")]
+    source: String,
+    #[serde(rename = "SourceDate")]
+    source_date: String,
+    #[serde(rename = "Equipment")]
+    equipment: String,
+    #[serde(rename = "Shape_Length")]
+    shape_length: f64,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
