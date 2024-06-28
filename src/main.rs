@@ -4,14 +4,20 @@ use std::error::Error;
 use mappy::lake_reader::depth_lines::DepthLines;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let file = File::open("LakeWaubesaWaterDepthLines (1).json")?;
+    let mercator = File::open("LakeWaubesaWaterDepthMercator.json")?;
+    let local = File::open("LakeWaubesaWaterDepthLines.json")?;
 
-    let reader = BufReader::new(file);
+    let reader_merc = BufReader::new(mercator);
+    let reader_local = BufReader::new(local);
 
-    let mut data: DepthLines = serde_json::from_reader(reader)?;
-    data.to_lat_lon();
+    let mut mercator: DepthLines = serde_json::from_reader(reader_merc)?;
+    let local: DepthLines = serde_json::from_reader(reader_local)?;
 
-    println!("{:#?}", data);
+    mercator.merge_depths(&local);
+    mercator.to_lat_lon();
+
+    let out = File::create_new("waubesa-depth.json")?;
+    serde_json::to_writer(out, &mercator)?;
 
     Ok(())
 }

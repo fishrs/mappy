@@ -18,6 +18,16 @@ impl DepthLines {
             feature.to_lat_lon();
         }
     }
+
+    pub fn merge_depths(&mut self, other: &Self) {
+        if self.features.len() != other.features.len() {
+            panic!("Will make this an error later but I'm lazy rn");
+        }
+
+        for i in 0..self.features.len() {
+            self.features[i].attributes = other.features[i].attributes.clone();
+        }
+    }
 }
 
 
@@ -34,7 +44,7 @@ impl Feature {
     }
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Attributes {
     #[serde(rename = "OBJECTID")]
     id: u32,
