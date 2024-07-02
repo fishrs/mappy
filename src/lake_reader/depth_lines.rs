@@ -26,6 +26,17 @@ impl DepthLines {
             self.features[i].attributes = other.features[i].attributes.clone();
         }
     }
+
+    pub fn get_depth_at(&self, point: (f64, f64)) -> f32 {
+        for feature in &self.features {
+            if feature.geometry.is_in_geometry(&point) {
+                if let Some(depth) = feature.attributes.water_depth {
+                    return depth
+                }
+            }
+        }
+        0f32
+    }
 }
 
 
@@ -72,6 +83,35 @@ impl Geometry {
                 mercator.1 = res.1;
             }
        }
+    }
+
+    pub fn is_in_geometry(&self, point: &(f64, f64)) -> bool {
+        let mut intersections = 0;
+        let (x, y) = point;
+        
+        let flattened = self.paths.iter().flatten().collect::<Vec<_>>();
+
+        for i in 0..flattened.len() {
+            let (x1, y1) = flattened[i];
+            let (x2, y2) = flattened[(i + 1) % flattened.len()];
+
+            if (x1 == x && y1 == y) || (x2 == x && y2 == y) {
+                return true;
+            }
+
+            if y1.min(*y2) <= *y && y <= &y1.max(*y2) && x <= &x1.max(*x2) {
+                if y1 != y2 {
+                    let x_inter = (y - y1) * (x2 - x1) / (y2 - y1) + x1;
+                    if &x_inter == x {
+                        return true;
+                    } else if x1 == x2 && x <= &x_inter {
+                        intersections += 1;
+                    }
+                }
+            }
+        }
+
+        intersections % 2 == 1
     }
 
     fn mercator_to_lat_lon(mercator: (f64, f64)) -> (f64, f64) {
