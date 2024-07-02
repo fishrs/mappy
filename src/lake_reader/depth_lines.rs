@@ -1,6 +1,4 @@
 use std::f64::consts::PI;
-
-use proj::Proj;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
